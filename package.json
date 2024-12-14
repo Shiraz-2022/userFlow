@@ -1,7 +1,7 @@
 {
   "name": "userflow",
   "version": "0.1.0",
-  "homepage": "https://Shiraz-2022.github.io/userFlow",
+  "homepage": "https://userflow2022.netlify.app",
   "private": true,
   "dependencies": {
     "cra-template": "1.2.0",
