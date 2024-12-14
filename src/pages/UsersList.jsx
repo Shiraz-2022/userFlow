@@ -134,7 +134,9 @@ const UsersList = () => {
 
     const selectedUserId = checkedUserIds[0];
     console.log("id", users);
-    const userDetails = users.find((user) => user.id == selectedUserId);
+    const userDetails = users.find(
+      (user) => Number(user.id) === Number(selectedUserId)
+    );
 
     console.log("userDetails", userDetails);
 
