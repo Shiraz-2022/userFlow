@@ -19,13 +19,13 @@ function Auth() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const { setIsSignedIn } = useContext(AuthContext);
+  const { signIn } = useContext(AuthContext);
 
   const handleLogin = async () => {
     setError("");
     const error = await login(email, password);
     if (!error) {
-      setIsSignedIn(true);
+      signIn();
       navigate("/users");
     } else {
       setError(error);

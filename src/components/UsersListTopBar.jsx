@@ -9,6 +9,11 @@ import EditForm from "./EditForm";
 import expandArrowIcon from "../assets/images/expandArrowIcon.svg";
 import editIcon from "../assets/images/editIcon.svg";
 import trashIcon from "../assets/images/trashIcon.svg";
+import CustomButton from "./microComponents/CustomButton";
+
+//context
+import { AuthContext } from "../contexts/AuthContext";
+import { useContext } from "react";
 
 function UsersListTopBar(props) {
   const { onSearch, onSort, handleDelete, openForm, handleUpdate } = props;
@@ -17,6 +22,8 @@ function UsersListTopBar(props) {
   const [activeSort, setActiveSort] = useState(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [userDetails, setUserDetails] = useState(null);
+
+  const { signOut } = useContext(AuthContext);
 
   const handleSort = (label) => {
     onSort(label.toLowerCase());
@@ -46,7 +53,7 @@ function UsersListTopBar(props) {
   };
 
   return (
-    <div className="relative z-3">
+    <div className="relative z-3 mb-5">
       <div className="flex justify-between">
         <div className="flex gap-7 align-middle max-tablet_lg:flex-col">
           <div className="w-72 max-tablet_lg:w-48">
@@ -106,6 +113,14 @@ function UsersListTopBar(props) {
         </div>
 
         <div className="flex gap-7 max-tablet_lg:flex-col items-end">
+          <div>
+            <CustomButton
+              text="Sign out"
+              textColor="#FFFFFF"
+              bgColor="#43B17F"
+              onClick={signOut}
+            />
+          </div>
           <div className="w-fit" onClick={openEditForm}>
             <CustomIconButton
               text="Edit"

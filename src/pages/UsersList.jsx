@@ -17,7 +17,10 @@ import { deleteUser, updateUser } from "../api/user";
 const UsersList = () => {
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(() => {
+    const savedPage = localStorage.getItem("currentPage");
+    return savedPage ? parseInt(savedPage, 10) : 1;
+  });
   const [totalPages, setTotalPages] = useState(1);
   const [checkedRows, setCheckedRows] = useState({});
   const [searchQuery, setSearchQuery] = useState("");
@@ -65,6 +68,7 @@ const UsersList = () => {
       [id]: !prevState[id],
     }));
   };
+
   const handleDelete = async () => {
     try {
       const checkedUserIds = Object.keys(checkedRows).filter(
@@ -104,6 +108,7 @@ const UsersList = () => {
 
       await updateUser(checkedUserIds[0], updatedUser);
       console.log("updateUser", updatedUser);
+
       setUsers(
         users.map((user) => (user.id === updatedUser.id ? updatedUser : user))
       );
@@ -133,18 +138,20 @@ const UsersList = () => {
     }
 
     const selectedUserId = checkedUserIds[0];
-    console.log("id", users);
     const userDetails = users.find(
       (user) => Number(user.id) === Number(selectedUserId)
     );
 
-    console.log("userDetails", userDetails);
-
     return userDetails;
   };
 
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+    localStorage.setItem("currentPage", newPage);
+  };
+
   return (
-    <div className="px-20 py-10 flex flex-col gap-10 h-screen max-tablet_lg:p-10">
+    <div className="px-20 py-10 flex flex-col gap-10 h-screen max-tablet_lg:p-5">
       {isSuccessDialogOpen && (
         <CustomDialog
           text={dialogMessage}
@@ -169,7 +176,7 @@ const UsersList = () => {
         openForm={openForm}
         handleUpdate={handleUpdate}
       />
-      <div className="w-full bg-white rounded-md text-customBlack  relative z-2 overflow-scroll">
+      <div className="w-full bg-white rounded-md text-customBlack relative z-2 overflow-scroll">
         <table className="w-full border-collapse">
           <thead className="rounded-md text-sm">
             <tr>
@@ -207,36 +214,37 @@ const UsersList = () => {
             ))}
           </tbody>
         </table>
+
         <div className="flex mx-auto w-fit justify-center items-center my-5 border border-customLightGray rounded-md text-sm">
           <button
             className={`px-4 py-2 flex items-center gap-3 ${
               currentPage === 1 && "text-customGray"
             }`}
             disabled={currentPage === 1}
-            onClick={() => setCurrentPage(currentPage - 1)}
+            onClick={() => handlePageChange(currentPage - 1)}
           >
             <img src={backArrowIcon} alt="back-arrow" className="w-5 h-5" />
             Previous
           </button>
-          <div className="flex gap-2">
-            {Array.from({ length: totalPages }, (_, index) => (
-              <button
-                key={index}
-                className={`px-4 py-2   ${
-                  currentPage === index + 1 && "bg-customLightGreen"
-                }`}
-                onClick={() => setCurrentPage(index + 1)}
-              >
-                {index + 1}
-              </button>
-            ))}
-          </div>
+
+          {Array.from({ length: totalPages }, (_, index) => (
+            <button
+              key={index}
+              className={`px-4 py-2 ${
+                currentPage === index + 1 && "bg-customLightGreen"
+              }`}
+              onClick={() => handlePageChange(index + 1)}
+            >
+              {index + 1}
+            </button>
+          ))}
+
           <button
             className={`px-4 py-2 flex items-center gap-3 ${
               currentPage === totalPages && "text-customGray"
             }`}
             disabled={currentPage === totalPages}
-            onClick={() => setCurrentPage(currentPage + 1)}
+            onClick={() => handlePageChange(currentPage + 1)}
           >
             Next
             <img
